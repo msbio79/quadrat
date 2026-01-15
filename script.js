@@ -144,38 +144,92 @@ function setupDragAndDrop() {
             addMeasurement(counts);
         });
     }
+
+    // Touch Events Support
+    quadrat.addEventListener('touchstart', onTouchStart, { passive: false });
+
+    // Handle Window Resize - Keep quadrat centered to avoid losing it
+    window.addEventListener('resize', centerQuadrat);
+}
+
+function centerQuadrat() {
+    const fieldRect = ecosystem.getBoundingClientRect();
+    const qRect = quadrat.getBoundingClientRect();
+
+    // Calculate center position relative to field
+    // Note: qRect.width might change due to responsive CSS (25%)
+    // But offsetWidth is reliable.
+    const centerX = (fieldRect.width - quadrat.offsetWidth) / 2;
+    const centerY = (fieldRect.height - quadrat.offsetHeight) / 2;
+
+    quadrat.style.left = `${centerX}px`;
+    quadrat.style.top = `${centerY}px`;
 }
 
 let dragOffsetX = 0;
 let dragOffsetY = 0;
 
+// --- Mouse Events ---
 function onMouseDown(e) {
-    // Prevent default to stop text selection or browser drag behavior
-    e.preventDefault();
-
+    e.preventDefault(); // Prevent default to stop text selection or browser drag behavior
     if (e.target.closest('.quadrat-label')) {
         // Optional: Handle label specific clicks
     }
-
-    isDragging = true;
-
-    // Calculate offset from the element's top-left
-    const rect = quadrat.getBoundingClientRect();
-    dragOffsetX = e.clientX - rect.left;
-    dragOffsetY = e.clientY - rect.top;
-
-    quadrat.style.cursor = 'grabbing';
+    startDrag(e.clientX, e.clientY);
 
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
 }
 
 function onMouseMove(e) {
-    if (!isDragging) return;
+    moveDrag(e.clientX, e.clientY);
+}
 
-    // Remove rAF if it causes "lag" feeling, or keep it for optimization.
-    // Given the user wants "immediate" response, raw updates are sometimes feeling snappier 
-    // on simple pages, but rAF is correct. Let's keep rAF but ensure logic is tight.
+function onMouseUp() {
+    endDrag();
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+}
+
+// --- Touch Events ---
+function onTouchStart(e) {
+    if (e.touches.length > 1) return; // Ignore multi-touch
+    e.preventDefault(); // Prevent scrolling
+
+    const touch = e.touches[0];
+    startDrag(touch.clientX, touch.clientY);
+
+    document.addEventListener('touchmove', onTouchMove, { passive: false });
+    document.addEventListener('touchend', onTouchEnd);
+}
+
+function onTouchMove(e) {
+    e.preventDefault(); // Stop scrolling
+    const touch = e.touches[0];
+    moveDrag(touch.clientX, touch.clientY);
+}
+
+function onTouchEnd() {
+    endDrag();
+    document.removeEventListener('touchmove', onTouchMove);
+    document.removeEventListener('touchend', onTouchEnd);
+}
+
+// --- Common Drag Logic ---
+
+function startDrag(clientX, clientY) {
+    isDragging = true;
+
+    // Calculate offset from the element's top-left
+    const rect = quadrat.getBoundingClientRect();
+    dragOffsetX = clientX - rect.left;
+    dragOffsetY = clientY - rect.top;
+
+    quadrat.style.cursor = 'grabbing';
+}
+
+function moveDrag(clientX, clientY) {
+    if (!isDragging) return;
 
     if (animationFrameId) return;
 
@@ -183,8 +237,8 @@ function onMouseMove(e) {
         const fieldRect = ecosystem.getBoundingClientRect();
 
         // Desired Left/Top relative to field
-        let newX = e.clientX - dragOffsetX - fieldRect.left;
-        let newY = e.clientY - dragOffsetY - fieldRect.top;
+        let newX = clientX - dragOffsetX - fieldRect.left;
+        let newY = clientY - dragOffsetY - fieldRect.top;
 
         // Boundary Check (Clamping)
         const qW = quadrat.offsetWidth;
@@ -200,16 +254,13 @@ function onMouseMove(e) {
     });
 }
 
-function onMouseUp() {
+function endDrag() {
     isDragging = false;
     quadrat.style.cursor = 'grab';
     if (animationFrameId) {
         cancelAnimationFrame(animationFrameId);
         animationFrameId = null;
     }
-
-    document.removeEventListener('mousemove', onMouseMove);
-    document.removeEventListener('mouseup', onMouseUp);
 }
 
 // --- Advanced Data Logic ---

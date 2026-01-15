@@ -50,8 +50,9 @@ body {
     background-image:
         radial-gradient(#9ae6b4 10%, transparent 11%),
         radial-gradient(#9ae6b4 10%, transparent 11%);
-    background-size: 60px 60px;
-    background-position: 0 0, 30px 30px;
+    background-size: 10% 10%;
+    /* Responsive grid */
+    background-position: 0 0, 5% 5%;
 }
 
 .field-header {
@@ -85,25 +86,7 @@ body {
     overflow: hidden;
 }
 
-/* Quadrat */
-.quadrat {
-    width: 200px;
-    /* Represents 1m x 1m scaled */
-    height: 200px;
-    border: 4px solid #e53e3e;
-    background-color: rgba(229, 62, 62, 0.1);
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    cursor: grab;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 100;
-    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
-    border-radius: 4px;
-}
+
 
 .quadrat:active {
     cursor: grabbing;
@@ -327,15 +310,18 @@ button {
 /* Plants Styling & Optimization */
 .plant {
     position: absolute;
-    width: 20px;
-    /* Slightly smaller for density feel */
-    height: 20px;
+    width: 2.5%;
+    /* Responsive size relative to field width */
+    height: auto;
+    aspect-ratio: 1/1;
+    /* Maintain circle shape */
     border-radius: 50%;
     transform: translate(-50%, -50%);
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 1rem;
+    font-size: 1.5vw;
+    /* Font size also scales with viewport */
     user-select: none;
     pointer-events: none;
     transition: transform 0.2s;
@@ -343,7 +329,23 @@ button {
 
 /* Quadrat Optimization */
 .quadrat {
-    /* ... existing styles ... */
+    width: 25%;
+    /* Responsive size: 25% of field width */
+    height: auto;
+    aspect-ratio: 1/1;
+    /* Maintain square */
+    border: 4px solid #e53e3e;
+    background-color: rgba(229, 62, 62, 0.1);
+    position: absolute;
+    /* Left/Top managed by JS */
+    /* top/left will be set by JS or default to 50% */
+    cursor: grab;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
+    border-radius: 4px;
     will-change: left, top;
     transition: none;
 }
@@ -358,4 +360,41 @@ button {
 
 .plant.foxtail::before {
     content: '🌿';
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .app-container {
+        flex-direction: column;
+        overflow-y: auto;
+        /* Allow scrolling on body/container level for mobile */
+        height: auto;
+        /* Let content dictate height or min-height 100vh */
+        min-height: 100vh;
+    }
+
+    .field-area {
+        height: 50vh;
+        /* Give half screen to field */
+        flex: none;
+        /* Don't grow indefinitely, respect height */
+        width: 100%;
+    }
+
+    .control-panel {
+        width: 100%;
+        height: auto;
+        border-left: none;
+        border-top: 1px solid var(--border-color);
+        padding: 16px;
+        box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.05);
+        /* shadow upwards */
+    }
+
+    /* Quadrat size on mobile is kept at 200px for usability, as shrinking it might make counting hard. */
+
+    .data-table-container {
+        max-height: none;
+        /* Let the table expand naturally in the scrolled panel */
+    }
 }
