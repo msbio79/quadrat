@@ -1,0 +1,400 @@
+:root {
+    --bg-color: #f0f4f8;
+    --field-bg: #e6f5d0;
+    /* Soft grass green */
+    --panel-bg: rgba(255, 255, 255, 0.9);
+    --text-primary: #2d3748;
+    --text-secondary: #4a5568;
+    --primary-color: #48bb78;
+    --primary-hover: #38a169;
+    --secondary-color: #a0aec0;
+    --border-color: #cbd5e0;
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+    --plant-dandelion: #f6e05e;
+    --plant-clover: #68d391;
+    --plant-foxtail: #81e6d9;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    height: 100vh;
+    overflow: hidden;
+}
+
+.app-container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+}
+
+/* Field Area */
+.field-area {
+    flex: 1;
+    position: relative;
+    background-color: var(--field-bg);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    background-image:
+        radial-gradient(#9ae6b4 10%, transparent 11%),
+        radial-gradient(#9ae6b4 10%, transparent 11%);
+    background-size: 10% 10%;
+    /* Responsive grid */
+    background-position: 0 0, 5% 5%;
+}
+
+.field-header {
+    margin-bottom: 20px;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 15px;
+    border-radius: 12px;
+    backdrop-filter: blur(5px);
+    width: fit-content;
+    box-shadow: var(--shadow-sm);
+    z-index: 10;
+}
+
+.field-header h1 {
+    font-size: 1.5rem;
+    color: #2f855a;
+    margin-bottom: 5px;
+}
+
+.field-header p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.ecosystem {
+    flex: 1;
+    position: relative;
+    border: 3px dashed #68d391;
+    border-radius: 12px;
+    background-color: rgba(255, 255, 255, 0.2);
+    overflow: hidden;
+}
+
+
+
+.quadrat:active {
+    cursor: grabbing;
+    background-color: rgba(229, 62, 62, 0.2);
+}
+
+.quadrat-label {
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #c53030;
+    pointer-events: none;
+}
+
+/* Control Panel */
+.control-panel {
+    width: 500px;
+    background-color: var(--panel-bg);
+    border-left: 1px solid var(--border-color);
+    padding: 16px;
+    /* Reduced padding */
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    /* Reduced gap */
+    box-shadow: -4px 0 15px rgba(0, 0, 0, 0.05);
+    /* Remove overflow-y: auto from main panel if we want to force fit, 
+       but keeping it is safer for small screens. 
+       We will aim to make content fit natively. */
+    overflow-y: auto;
+    backdrop-filter: blur(10px);
+}
+
+.panel-section h2 {
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+    color: #2c5282;
+    border-bottom: 2px solid #bee3f8;
+    padding-bottom: 4px;
+}
+
+.guide-section p {
+    font-size: 0.85rem;
+    line-height: 1.3;
+    margin-bottom: 4px;
+    color: var(--text-secondary);
+}
+
+.stats-controls {
+    display: flex;
+    gap: 8px;
+    flex-direction: row;
+    /* Back to row for compactness if possible, or tightly stacked */
+    margin-bottom: 8px;
+}
+
+button {
+    flex: 1;
+    /* Distribute space */
+    padding: 8px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.primary-btn {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.primary-btn:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-1px);
+}
+
+.secondary-btn {
+    background-color: #edf2f7;
+    color: var(--text-secondary);
+}
+
+.secondary-btn:hover {
+    background-color: #e2e8f0;
+}
+
+/* Data Table - Compact */
+.data-table-container {
+    overflow-x: auto;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    margin-bottom: 12px;
+    max-height: 150px;
+    /* Reduced height */
+    overflow-y: auto;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+    /* Smaller font */
+}
+
+.data-table th,
+.data-table td {
+    padding: 6px;
+    /* Reduced padding */
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.data-table th {
+    background-color: #f7fafc;
+    font-weight: 600;
+    color: var(--text-secondary);
+    position: sticky;
+    top: 0;
+    z-index: 5;
+}
+
+.data-table tfoot {
+    background-color: #ebf8ff;
+    font-weight: bold;
+}
+
+/* Analysis Dashboard - Grid Layout */
+.analysis-dashboard {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    /* Two columns */
+    gap: 10px;
+}
+
+.analysis-dashboard h3 {
+    grid-column: 1 / -1;
+    /* Header spans full width */
+    font-size: 1rem;
+    color: #2d3748;
+    border-left: 4px solid var(--primary-color);
+    padding-left: 8px;
+    margin-bottom: 4px;
+}
+
+.result-category {
+    background: white;
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    /* Aligned to top */
+}
+
+.result-category h4 {
+    font-size: 0.85rem;
+    color: #4a5568;
+    margin-bottom: 2px;
+    text-align: center;
+}
+
+.sub-text {
+    font-size: 0.7rem;
+    color: #a0aec0;
+    margin-bottom: 6px;
+    text-align: center;
+}
+
+.result-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 4px;
+}
+
+.result-card {
+    background: #f7fafc;
+    padding: 4px;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 0.75rem;
+    flex: 1;
+}
+
+.result-card .label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 2px;
+    font-size: 0.75rem;
+}
+
+.result-card .values {
+    display: flex;
+    flex-direction: column;
+    gap: 0px;
+}
+
+.result-card strong {
+    color: #2b6cb0;
+}
+
+.result-card.dandelion {
+    border-top: 2px solid var(--plant-dandelion);
+}
+
+.result-card.clover {
+    border-top: 2px solid var(--plant-clover);
+}
+
+.result-card.foxtail {
+    border-top: 2px solid var(--plant-foxtail);
+}
+
+.total .result-card {
+    background: #ebf8ff;
+}
+
+/* Plants Styling & Optimization */
+.plant {
+    position: absolute;
+    width: 2.5%;
+    /* Responsive size relative to field width */
+    height: auto;
+    aspect-ratio: 1/1;
+    /* Maintain circle shape */
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5vw;
+    /* Font size also scales with viewport */
+    user-select: none;
+    pointer-events: none;
+    transition: transform 0.2s;
+}
+
+/* Quadrat Optimization */
+.quadrat {
+    width: 25%;
+    /* Responsive size: 25% of field width */
+    height: auto;
+    aspect-ratio: 1/1;
+    /* Maintain square */
+    border: 4px solid #e53e3e;
+    background-color: rgba(229, 62, 62, 0.1);
+    position: absolute;
+    /* Left/Top managed by JS */
+    /* top/left will be set by JS or default to 50% */
+    cursor: grab;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
+    border-radius: 4px;
+    will-change: left, top;
+    transition: none;
+}
+
+.plant.dandelion::before {
+    content: '🌼';
+}
+
+.plant.clover::before {
+    content: '☘️';
+}
+
+.plant.foxtail::before {
+    content: '🌿';
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .app-container {
+        flex-direction: column;
+        overflow-y: auto;
+        /* Allow scrolling on body/container level for mobile */
+        height: auto;
+        /* Let content dictate height or min-height 100vh */
+        min-height: 100vh;
+    }
+
+    .field-area {
+        height: 50vh;
+        /* Give half screen to field */
+        flex: none;
+        /* Don't grow indefinitely, respect height */
+        width: 100%;
+    }
+
+    .control-panel {
+        width: 100%;
+        height: auto;
+        border-left: none;
+        border-top: 1px solid var(--border-color);
+        padding: 16px;
+        box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.05);
+        /* shadow upwards */
+    }
+
+    /* Quadrat size on mobile is kept at 200px for usability, as shrinking it might make counting hard. */
+
+    .data-table-container {
+        max-height: none;
+        /* Let the table expand naturally in the scrolled panel */
+    }
+}
